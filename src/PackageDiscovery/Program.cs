@@ -16,9 +16,10 @@ namespace PackageDiscovery
             // initialize
             IReadOnlyCollection<IPackageFinder> packageFinders = new IPackageFinder[]
             {
-                new NuGetPackageFinder(),
-                new NPMPackageFinder(),
                 new BowerPackageFinder(),
+                new ComposerPackageFinder(),
+                new NPMPackageFinder(),
+                new NuGetPackageFinder(),
             };
 
             // process arguments

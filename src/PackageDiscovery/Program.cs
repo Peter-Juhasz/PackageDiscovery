@@ -35,7 +35,10 @@ namespace PackageDiscovery
                 select package
             )
                 .Distinct(p => new { p.Kind, p.Id, p.Version, p.IsDevelopmentPackage })
-                .OrderBy(p => p.Kind).ThenBy(p => p.Id).ThenBy(p => p.Version)
+                .OrderBy(p => p.Kind)
+                    .ThenBy(p => p.Id)
+                    .ThenBy(p => p.Version)
+                    .ThenBy(p => p.IsDevelopmentPackage)
                 .ToList();
 
             // write output

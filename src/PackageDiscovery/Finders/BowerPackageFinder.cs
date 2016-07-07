@@ -15,9 +15,13 @@ namespace PackageDiscovery.Finders
                 .GetFiles("bower.json", SearchOption.AllDirectories)
                 .Select(f => JObject.Parse(File.ReadAllText(f.FullName)))
                 .SelectMany(j =>
-                    j.Value<JObject>("dependencies")?.Properties().Union(
-                        j.Value<JObject>("devDependencies")?.Properties() ?? Enumerable.Empty<JProperty>()
-                    ) ?? Enumerable.Empty<JProperty>()
+                    new[] {
+                        j.Value<JObject>("dependencies"),
+                        j.Value<JObject>("devDependencies"),
+                    }
+                        .Select(n => n?.Properties())
+                        .Where(s => s != null)
+                        .Concat()
                 )
                 .Select(j => new Package(
                     Moniker,

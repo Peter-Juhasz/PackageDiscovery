@@ -20,6 +20,7 @@ namespace PackageDiscovery
                 new ComposerPackageFinder(),
                 new NPMPackageFinder(),
                 new NuGetPackageFinder(),
+                new TsdPackageFinder()
             };
 
             // process arguments

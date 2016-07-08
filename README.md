@@ -7,8 +7,9 @@ Find all referenced packages in your solutions for:
 Written using **.NET Core 1.0.0**, runs everywhere.
 
 Supported package managers:
- - Composer
  - Bower
+ - CocoaPods
+ - Composer
  - NPM
  - NuGet
  - TSD

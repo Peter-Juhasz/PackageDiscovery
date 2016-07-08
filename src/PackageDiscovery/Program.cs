@@ -17,6 +17,7 @@ namespace PackageDiscovery
             IReadOnlyCollection<IPackageFinder> packageFinders = new IPackageFinder[]
             {
                 new BowerPackageFinder(),
+                new CocoaPodsPackageFinder(),
                 new ComposerPackageFinder(),
                 new NPMPackageFinder(),
                 new NuGetPackageFinder(),

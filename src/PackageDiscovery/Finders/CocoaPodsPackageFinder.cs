@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Composition;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace PackageDiscovery.Finders
 {
+    [Export(Moniker, typeof(IPackageFinder))]
     public sealed class CocoaPodsPackageFinder : IPackageFinder
     {
         public const string Moniker = "CocoaPods";
@@ -22,7 +24,7 @@ namespace PackageDiscovery.Finders
                 .Select(m => new Package(
                     Moniker,
                     m.Groups["id"].Value,
-                    m.Groups["version"].Value
+                    m.Groups["version"]?.Value
                 ))
                 .Distinct(p => new { p.Id, p.Version })
                 .OrderBy(p => p.Id)

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Composition;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
 namespace PackageDiscovery.Finders
 {
+    [Export(Moniker, typeof(IPackageFinder))]
     public sealed class NuGetPackageFinder : IPackageFinder
     {
         public const string Moniker = "NuGet";

@@ -1,8 +1,9 @@
-﻿using PackageDiscovery.Finders;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace PackageDiscovery
 {
@@ -14,16 +15,11 @@ namespace PackageDiscovery
         public static void Main(string[] args)
         {
             // initialize
-            IReadOnlyCollection<IPackageFinder> packageFinders = new IPackageFinder[]
-            {
-                new BowerPackageFinder(),
-                new CocoaPodsPackageFinder(),
-                new ComposerPackageFinder(),
-                new NPMPackageFinder(),
-                new NuGetPackageFinder(),
-                new TsdPackageFinder(),
-                new TypingsPackageFinder(),
-            };
+            IReadOnlyCollection<IPackageFinder> packageFinders = typeof(IPackageFinder).GetTypeInfo().Assembly.GetExportedTypes()
+                .Where(t => t.GetTypeInfo().GetCustomAttributes<ExportAttribute>().Any(a => a.ContractType == typeof(IPackageFinder)))
+                .Select(Activator.CreateInstance)
+                .Cast<IPackageFinder>()
+                .ToList();
 
             // process arguments
             IReadOnlyCollection<DirectoryInfo> directories = (args ?? Enumerable.Empty<string>())

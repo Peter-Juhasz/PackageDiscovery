@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.IO;
 using System.Linq;
 
 namespace PackageDiscovery.Finders
 {
+    [Export(Moniker, typeof(IPackageFinder))]
     public sealed class TypingsPackageFinder : IPackageFinder
     {
         public const string Moniker = "Typings";

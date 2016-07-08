@@ -11,6 +11,8 @@ Supported package managers:
  - Bower
  - NPM
  - NuGet
+ - TSD
+ - Typings
 
 ## Usage
 Windows:

@@ -31,13 +31,23 @@ namespace PackageDiscovery.Finders
                 .Select(j => new Package(
                     Moniker,
                     j.Name,
-                    j.Value.ToString(),
+                    GetVersion(j.Value.ToString()),
                     (j.Parent.Parent as JProperty).Name.IndexOf("devDependencies", StringComparison.OrdinalIgnoreCase) != -1
                 ))
                 .Distinct(p => new { p.Id, p.Version })
                 .OrderBy(p => p.Id)
                 .ThenBy(p => p.Version)
                 .ToList();
+        }
+
+        private static string GetVersion(string versionString)
+        {
+            string[] parts = versionString.Split('#');
+
+            if (parts.Length <= 1)
+                return null;
+
+            return parts.Last();
         }
     }
 }

@@ -14,26 +14,63 @@ namespace PackageDiscovery
 
         public static void Main(string[] args)
         {
+            // process arguments
+            IReadOnlyCollection<DirectoryInfo> directories = (args ?? Enumerable.Empty<string>())
+                .Where(a => !a.StartsWith("--"))
+                .DefaultIfEmpty(Directory.GetCurrentDirectory())
+                .Select(p => new DirectoryInfo(p))
+                .ToList();
+
+            // find
+            IReadOnlyCollection<Package> packages = args.Contains("--installed")
+                // find installed packages
+                ? FindInstalledPackages(directories)
+                // find referenced packages
+                : FindReferencedPackages(directories);
+            
+            // render
+            RenderResults(packages);
+        }
+
+        private static IReadOnlyCollection<Package> FindReferencedPackages(IReadOnlyCollection<DirectoryInfo> directories)
+        {
             // initialize
             IReadOnlyCollection<IReferencedPackageFinder> packageFinders = typeof(IReferencedPackageFinder).GetTypeInfo().Assembly.GetExportedTypes()
                 .Where(t => t.GetTypeInfo().GetCustomAttributes<ExportAttribute>().Any(a => a.ContractType == typeof(IReferencedPackageFinder)))
                 .Select(Activator.CreateInstance)
                 .Cast<IReferencedPackageFinder>()
                 .ToList();
-
-            // process arguments
-            IReadOnlyCollection<DirectoryInfo> directories = (args ?? Enumerable.Empty<string>())
-                .DefaultIfEmpty(Directory.GetCurrentDirectory())
-                .Select(p => new DirectoryInfo(p))
-                .ToList();
-
+            
             // find packages
-            IReadOnlyCollection<Package> packages = (
+            return (
                 from finder in packageFinders
                 from directory in directories
                 from package in finder.FindReferencedPackages(directory)
                 select package
-            )
+            ).ToList();
+        }
+
+        private static IReadOnlyCollection<Package> FindInstalledPackages(IReadOnlyCollection<DirectoryInfo> directories)
+        {
+            // initialize
+            IReadOnlyCollection<IInstalledPackageFinder> packageFinders = typeof(IInstalledPackageFinder).GetTypeInfo().Assembly.GetExportedTypes()
+                .Where(t => t.GetTypeInfo().GetCustomAttributes<ExportAttribute>().Any(a => a.ContractType == typeof(IInstalledPackageFinder)))
+                .Select(Activator.CreateInstance)
+                .Cast<IInstalledPackageFinder>()
+                .ToList();
+            
+            // find packages
+            return (
+                from finder in packageFinders
+                from directory in directories
+                from package in finder.FindInstalledPackages(directory)
+                select package
+            ).ToList();
+        }
+
+        private static void RenderResults(IReadOnlyCollection<Package> packages)
+        {
+            packages = packages
                 .Distinct(p => new { p.Kind, p.Id, p.Version, p.IsDevelopmentPackage })
                 .OrderBy(p => p.Kind)
                     .ThenBy(p => p.Id)

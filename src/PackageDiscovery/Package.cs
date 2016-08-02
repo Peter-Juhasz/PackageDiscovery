@@ -2,7 +2,7 @@
 {
     public class Package
     {
-        public Package(string kind, string id, string version, bool isDevelopmentPackage = false)
+        public Package(string kind, string id, string version, bool? isDevelopmentPackage = false)
         {
             this.Kind = kind;
             this.Id = id;
@@ -16,6 +16,6 @@
 
         public string Kind { get; set; }
 
-        public bool IsDevelopmentPackage { get; set; }
+        public bool? IsDevelopmentPackage { get; set; }
     }
 }

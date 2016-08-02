@@ -6,8 +6,8 @@ using System.Text.RegularExpressions;
 
 namespace PackageDiscovery.Finders
 {
-    [Export(Moniker, typeof(IPackageFinder))]
-    public sealed class CocoaPodsPackageFinder : IPackageFinder
+    [Export(Moniker, typeof(IReferencedPackageFinder))]
+    public sealed class CocoaPodsPackageFinder : IReferencedPackageFinder
     {
         public const string Moniker = "CocoaPods";
 
@@ -15,7 +15,7 @@ namespace PackageDiscovery.Finders
             @"\bpod\s*'(?<id>[^']+)'(\s*,\s*'(?<version>[^']+)')?"
         );
 
-        public IReadOnlyCollection<Package> FindPackages(DirectoryInfo directory)
+        public IReadOnlyCollection<Package> FindReferencedPackages(DirectoryInfo directory)
         {
             return directory
                 .GetFiles("Podfile", SearchOption.AllDirectories)

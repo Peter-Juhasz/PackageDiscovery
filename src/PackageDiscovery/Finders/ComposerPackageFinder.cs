@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace PackageDiscovery.Finders
 {
-    [Export(Moniker, typeof(IPackageFinder))]
-    public sealed class ComposerPackageFinder : IPackageFinder
+    [Export(Moniker, typeof(IReferencedPackageFinder))]
+    public sealed class ComposerPackageFinder : IReferencedPackageFinder
     {
         public const string Moniker = "Composer";
 
-        public IReadOnlyCollection<Package> FindPackages(DirectoryInfo directory)
+        public IReadOnlyCollection<Package> FindReferencedPackages(DirectoryInfo directory)
         {
             return directory
                 .GetFiles("composer.json", SearchOption.AllDirectories)

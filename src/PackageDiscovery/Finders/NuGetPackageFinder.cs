@@ -6,12 +6,12 @@ using System.Xml.Linq;
 
 namespace PackageDiscovery.Finders
 {
-    [Export(Moniker, typeof(IPackageFinder))]
-    public sealed class NuGetPackageFinder : IPackageFinder
+    [Export(Moniker, typeof(IReferencedPackageFinder))]
+    public sealed class NuGetPackageFinder : IReferencedPackageFinder
     {
         public const string Moniker = "NuGet";
 
-        public IReadOnlyCollection<Package> FindPackages(DirectoryInfo directory)
+        public IReadOnlyCollection<Package> FindReferencedPackages(DirectoryInfo directory)
         {
             var packagesFromRepositories = (
                 from f in directory

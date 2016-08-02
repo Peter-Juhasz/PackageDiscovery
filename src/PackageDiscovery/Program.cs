@@ -15,10 +15,10 @@ namespace PackageDiscovery
         public static void Main(string[] args)
         {
             // initialize
-            IReadOnlyCollection<IPackageFinder> packageFinders = typeof(IPackageFinder).GetTypeInfo().Assembly.GetExportedTypes()
-                .Where(t => t.GetTypeInfo().GetCustomAttributes<ExportAttribute>().Any(a => a.ContractType == typeof(IPackageFinder)))
+            IReadOnlyCollection<IReferencedPackageFinder> packageFinders = typeof(IReferencedPackageFinder).GetTypeInfo().Assembly.GetExportedTypes()
+                .Where(t => t.GetTypeInfo().GetCustomAttributes<ExportAttribute>().Any(a => a.ContractType == typeof(IReferencedPackageFinder)))
                 .Select(Activator.CreateInstance)
-                .Cast<IPackageFinder>()
+                .Cast<IReferencedPackageFinder>()
                 .ToList();
 
             // process arguments
@@ -31,7 +31,7 @@ namespace PackageDiscovery
             IReadOnlyCollection<Package> packages = (
                 from finder in packageFinders
                 from directory in directories
-                from package in finder.FindPackages(directory)
+                from package in finder.FindReferencedPackages(directory)
                 select package
             )
                 .Distinct(p => new { p.Kind, p.Id, p.Version, p.IsDevelopmentPackage })

@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace PackageDiscovery.Finders
 {
-    [Export(Moniker, typeof(IPackageFinder))]
-    public sealed class TypingsPackageFinder : IPackageFinder
+    [Export(Moniker, typeof(IReferencedPackageFinder))]
+    public sealed class TypingsPackageFinder : IReferencedPackageFinder
     {
         public const string Moniker = "Typings";
 
-        public IReadOnlyCollection<Package> FindPackages(DirectoryInfo directory)
+        public IReadOnlyCollection<Package> FindReferencedPackages(DirectoryInfo directory)
         {
             return directory
                 .GetFiles("typings.json", SearchOption.AllDirectories)

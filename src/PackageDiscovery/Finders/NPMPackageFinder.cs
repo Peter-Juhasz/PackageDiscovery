@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace PackageDiscovery.Finders
 {
-    [Export(Moniker, typeof(IPackageFinder))]
-    public sealed class NPMPackageFinder : IPackageFinder
+    [Export(Moniker, typeof(IReferencedPackageFinder))]
+    public sealed class NPMPackageFinder : IReferencedPackageFinder
     {
         public const string Moniker = "NPM";
 
-        public IReadOnlyCollection<Package> FindPackages(DirectoryInfo directory)
+        public IReadOnlyCollection<Package> FindReferencedPackages(DirectoryInfo directory)
         {
             return directory
                 .GetFiles("package.json", SearchOption.AllDirectories)

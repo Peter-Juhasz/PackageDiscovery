@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace PackageDiscovery.Finders
 {
-    [Export(Moniker, typeof(IPackageFinder))]
-    public sealed class TsdPackageFinder : IPackageFinder
+    [Export(Moniker, typeof(IReferencedPackageFinder))]
+    public sealed class TsdPackageFinder : IReferencedPackageFinder
     {
         public const string Moniker = "TSD";
 
-        public IReadOnlyCollection<Package> FindPackages(DirectoryInfo directory)
+        public IReadOnlyCollection<Package> FindReferencedPackages(DirectoryInfo directory)
         {
             return directory
                 .GetFiles("tsd.json", SearchOption.AllDirectories)

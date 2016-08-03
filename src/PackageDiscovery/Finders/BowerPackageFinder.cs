@@ -7,7 +7,8 @@ using System.Linq;
 namespace PackageDiscovery.Finders
 {
     [Export(Moniker, typeof(IReferencedPackageFinder))]
-    public sealed class BowerPackageFinder : IReferencedPackageFinder
+    [Export(Moniker, typeof(IInstalledPackageFinder))]
+    public sealed class BowerPackageFinder : IReferencedPackageFinder, IInstalledPackageFinder
     {
         public const string Moniker = "Bower";
 
@@ -32,6 +33,26 @@ namespace PackageDiscovery.Finders
                     (j.Parent.Parent as JProperty).Name == "devDependencies"
                 ))
                 .Distinct(p => new { p.Id, p.Version, p.IsDevelopmentPackage })
+                .OrderBy(p => p.Id)
+                .ThenBy(p => p.Version)
+                .ToList();
+        }
+
+        public IReadOnlyCollection<Package> FindInstalledPackages(DirectoryInfo directory)
+        {
+            return directory
+                .GetDirectories("bower_components", SearchOption.AllDirectories)
+                .SelectMany(d => d.GetFiles("bower.json", SearchOption.AllDirectories))
+                .Where(f => f.Directory.Parent.Name == "bower_components")
+                .Select(f => JObject.Parse(File.ReadAllText(f.FullName)))
+                .Where(j => j["name"] != null)
+                .Select(j => new Package(
+                    Moniker,
+                    j["name"].ToString(),
+                    j["version"].ToString(),
+                    isDevelopmentPackage: null
+                ))
+                .Distinct(p => new { p.Id, p.Version })
                 .OrderBy(p => p.Id)
                 .ThenBy(p => p.Version)
                 .ToList();
